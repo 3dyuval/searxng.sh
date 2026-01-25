@@ -47,9 +47,14 @@ searxng_engines_api() {
   curl -s "${SEARXNG_URL}/config" | jq -r '.engines[] | select(.enabled==true) | .name' | sort -u
 }
 
-# For carapace completions (uses YAML config)
+# For carapace completions (API first, YAML fallback)
 searxng_complete_engines() {
-  searxng_engines
+  local engines
+  engines=$(searxng_engines_api 2>/dev/null)
+  if [[ -z "$engines" ]]; then
+    engines=$(searxng_engines)
+  fi
+  echo "$engines"
 }
 
 # Query function (called by ~/.local/bin/xng wrapper)

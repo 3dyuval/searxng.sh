@@ -1,7 +1,7 @@
 name: xng
-description: SearXNG search (opens browser, -f for CLI output)
+description: SearXNG search (opens browser, -o for CLI output)
 flags:
-  -f, --format=: output format (enables CLI mode)
+  -o, --output=: output format (url prints URL, others fetch via curl)
   -e, --engine=: search engine (chainable)
   -c, --category=: search category (chainable)
   -l, --lang=: language filter
@@ -9,7 +9,7 @@ flags:
 
 completion:
   flag:
-    format: ["json", "html", "csv", "rss"]
+    output: ["url", "json", "html", "csv", "rss"]
     engine: ["$(source ~/proj/searxng.sh/searxng.sh && searxng_complete_engines)"]
     category: ["general", "images", "videos", "news", "music", "files", "it", "science", "social media"]
     lang: ["en", "de", "fr", "es", "it", "pt", "nl", "ru", "zh", "ja", "ko", "ar", "he"]

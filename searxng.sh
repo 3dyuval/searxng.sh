@@ -59,13 +59,13 @@ searxng_complete_engines() {
 
 # Query function (called by ~/.local/bin/xng wrapper)
 _xng() {
-  local format="" engines=() categories=() page="" lang=""
+  local output="" engines=() categories=() page="" lang=""
   local query=""
 
   while [[ $# -gt 0 ]]; do
     case "$1" in
-    -f | --format)
-      format="$2"
+    -o | --output)
+      output="$2"
       shift 2
       ;;
     -e | --engine)
@@ -100,10 +100,12 @@ _xng() {
   [[ -n "$prefixes" ]] && query="$prefixes $query"
 
   local url="${SEARXNG_URL}/search?q=$(echo "$query" | sed 's/ /+/g')"
-  [[ -n "$format" ]] && url="${url}&format=${format}"
+  [[ -n "$output" && "$output" != "url" ]] && url="${url}&format=${output}"
   [[ -n "$page" ]] && url="${url}&pageno=${page}"
 
-  if [[ -n "$format" ]]; then
+  if [[ "$output" == "url" ]]; then
+    echo "$url"
+  elif [[ -n "$output" ]]; then
     curl -s "$url"
   else
     xdg-open "$url"

@@ -3,18 +3,9 @@
 ## Requirements
 
 - SearXNG instance
-- `curl`
+- `curl`, `jq`
 - `xdg-open` (Linux) or `open` (macOS)
-- [`carapace-spec`](https://github.com/carapace-sh/carapace-spec) (optional, for shell completions)
-
-## Environment Variables
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `SEARXNG_URL` | `http://localhost:8855` | SearXNG instance URL |
-| `SEARXNG_CONFIG` | `/etc/searxng/settings.yml` | Path to settings (for engine completions)* |
-
-*Engine completions are fetched from `$SEARXNG_URL/config` endpoint, falling back to parsing `$SEARXNG_CONFIG` if unavailable.
+- [`carapace-spec`](https://github.com/carapace-sh/carapace-spec) (optional, for completions)
 
 ## Installation
 
@@ -22,25 +13,49 @@
 source searxng.sh && searxng_install
 ```
 
+## Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `SEARXNG_URL` | `http://localhost:8855` | SearXNG instance URL |
+| `SEARXNG_CONFIG` | `/etc/searxng/settings.yml` | fallback for engine completions |
+
 ## Usage
 
-### Single engine
+```bash
+xng paris                       # opens browser
+xng -o json paris               # returns JSON
+xng -o url paris                # prints URL without fetching
+```
 
-xng -e google paris # → !google paris
+### Engines and shortcuts
 
-### Multiple engines (chainable)
+```bash
+xng -e google paris             # engine by name
+xng -s g paris                  # engine by shortcut
+xng -s g -s images paris        # multiple
+```
 
-xng -e google -e ddg paris # → !google !ddg paris
+`-e` completes engine names, `-s` completes shortcuts.
 
-### Category + engine + language
+### Categories and language
 
-xng -e wp -c images -l fr paris # → !wp !images :fr paris
+```bash
+xng -c images paris             # category
+xng -l fr paris                 # language
+xng -s g -c images -l fr paris  # combined
+```
 
-### Just open browser
+### Pagination
 
-xng paris # opens browser
+```bash
+xng -p 2 paris                  # page 2
+```
 
-### CLI output
+## Custom engines
 
-xng -o json paris # returns JSON
-xng -o url paris  # prints the URL without fetching
+See `../searxng/engines/` for custom SearXNG engines like `reddit_subreddit.py` which searches within a subreddit:
+
+```bash
+xng -s rsub 'linux/neovim'      # search r/linux for "neovim"
+```
